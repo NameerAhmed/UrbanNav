@@ -1,6 +1,16 @@
 ## Notes on UAM routing 
 
 
+May 14, Aadit 
+
+### Section 2B 
+1. what is flight rate - what does it mean 
+
+2. i want to know the UNITs of variables - this will help me understand the math and build the correct implementation 
+
+3. 2. i want to know the UNITs of variables - this will help me understand the math and build the correct implementation 
+
+3. 
 
 May 13, Aadit
 
