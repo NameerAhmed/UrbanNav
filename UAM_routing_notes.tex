@@ -1,0 +1,83 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\geometry{margin=1in}
+
+\title{Notes on UAM Routing}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+% ──────────────────────────────────────────
+\section*{May 14 --- Aadit}
+
+\subsection*{Section 2B}
+
+\begin{enumerate}
+    \item \textbf{What is flight rate --- what does it mean?}
+
+    The flight rate $\mu_{ij}$ on the link $i \to j$ measures how many UAV flights are completed on the link $i \to j$ per unit time.
+
+    It is the inverse of the flight time $ \tau_{ij} $, which is simply the time it takes for a UAV to travel on the link $i \to j$. We define $ \mu_{ij} := \frac{1}{\tau_{ij}} $.
+
+    \item \textbf{Units of variables} --- understanding the units will help with the math and building the correct implementation.
+
+    $Q, S, F$ are discrete counts of UAVs, measured in units of $ [\text{UAV}] $. $q, s, f$ are normalized counts (unitless) and are continuous i.e. $q, s, f \in [0,1]$.
+
+   The flight rates and service rates $ \mu_{ij} $ and $ \mu_s $ are in units of $ [\text{time}]^{-1} $. The ODEs and the optimization problem are invariant under time rescaling (it does that matter if it is measured in terms of seconds, minutes, hours, etc.).
+
+   Elements of the routing matrix $p_{ij}$, the maximum capacity $\kappa$, the destination masses, etc. are all unitless.
+    
+\end{enumerate}
+
+% ──────────────────────────────────────────
+\section*{May 13 --- Aadit}
+
+\subsection*{Section 2B}
+
+\begin{enumerate}
+
+    \item \textbf{Will there be any conflict between theory and implementation?}
+    \begin{itemize}
+        \item UrbanNav is a discrete-time system
+        \item vs.\ the theoretical modeling, which assumes a Continuous-Time Markov Chain (CTMC)
+    \end{itemize}
+
+    The main conflict will be dealing with stochastic behavior. In the fluid model, everything is continuous and deterministic. This is because as $ N_{\text{UAV}} \to \infty $, by Functional Law of Large numbers the discrete, stochastic model converges to a continuous, deterministic model. Thus, this means at smaller values of $N_{\text{UAV}}$, the fluid model will be less accurate as we will have more stochastic behavior (variance).
+
+    \item \textbf{What does \emph{waiting in a queue} mean?}
+
+    Since this is a state of the UAV:
+    \begin{itemize}
+        \item Is it at the vertport's vertipad, sitting idle?
+        \item Or is it hovering around the vertiport?
+    \end{itemize}
+
+    \textbf{Answer:} $Q_{i}^{(d)}$ indicates the UAV is hovering around vertiport $i$ waiting for a pad --- possibly because the UAV is hovering at vertiport $i$ but its destination is $d$.
+
+    \textbf{Nameer:} The UAV is hovering around the vertiport, waiting to land. Even if its destination is $d$, if there is a queue at $d$, the UAV is hovering. In this model, we do not assume UAVs are sitting idle, as we want a recirculating model (when the UAVs land at the pad, there is always some sort of demand. Not on and off. The thought behind this is this will help maximize stress to the model).
+
+    \item \textbf{What does \emph{in service on a landing pad} mean?}
+
+    Loading/unloading passengers, charging, and other activities related to the UAV while on the vertiport. \textbf{Nameer}: Correct
+
+    \item \textbf{Flight duration does not make sense.}
+
+    flight duration does not make sense, if $\mu_{ij}$ is fight rate from vertiport $ i \to j $, and avg flight time is $\frac{1}{\mu_{ij}}$, that would mean, as flight rate between increases, the travel time will decrease, that does not make sense, unless, UAVs will fly faster, but, even then there is a physical limit to UAV speed, so ..... 
+
+    \textbf{Nameer:} The flight rate $\mu_{ij}$ is defined as the inverse of the travel time $ \tau_{ij} $ i.e. $\mu_{ij} := \frac{1}{\tau_{ij}}$. It is easier to think of the flight rate as what portion of the UAV flight $i \to j$ has been completed. A longer travel time $\tau_{ij}$ means a smaller portion of the total flight will be completed in a unit time, whereas a shorter travel time $\tau_{ij}$ means a larger portion of the total flight will be completed in a unit time. 
+
+    For example, let's say for a link $i \to j$, we have UAV 1 and UAV 2 with travel times $\tau_1 = 3$ minutes and $\tau_2 = 5$ minutes. This means UAV 1 completes $\frac{1}{3}$ of its flight every minute, whereas UAV 2 only completes $\frac{1}{5}$ of its flight every minute. This means UAV 2 has a smaller flight rate since less flights can be completed per unit time. 
+
+\end{enumerate}
+
+\end{document}
