@@ -200,7 +200,7 @@ class SimulatorManager:
             if vertiport.uav_id_list:
                 for uav_id in vertiport.uav_id_list:
                     if not self.atc.uav_dict[uav_id].operational and not self.atc.uav_dict[uav_id].uav_in_flight: 
-                        new_mission =  random.random() > 0.5 
+                        new_mission =  random.random() > 0.5 # instead of this, we can sample from exp distribution
                         if new_mission:
                             # print(f'ATC uav ids: {self.atc.uav_dict} ')
                             # print(f'UAV id: {uav_id}, of UAV: {self.atc.uav_dict[uav_id]}')
