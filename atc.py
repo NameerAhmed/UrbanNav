@@ -44,7 +44,15 @@ class ATC():
 
         self.uav_id_index = 0
         
-        
+    
+    # Assign OD Demand matrix
+    def assign_od_demand(self, od_matrix: np.ndarray):
+        '''Assign OD demand matrix to vertiports in airspace. 
+        od_matrix: 2D numpy array where od_matrix[i][j] represents demand from vertiport i to vertiport j.
+        '''
+        for i, vp in enumerate(self.airspace.vertiport_list):
+            vp.od_demand = od_matrix[i]
+
    
     def get_state(self,):
         '''ATC state is current uav_list in simulation'''
@@ -405,6 +413,46 @@ class ATC():
                 break
         uav.assign_start_end(start_vertiport, end_vertiport)
         print(f'Reassigned new mission to UAV id: {uav.id_}')
+
+        return None
+    
+    def reassign_new_mission_decentralized(self, uav_id: int, routing_matrix: dict):
+        '''
+        Reassigns a new mission to a UAV by selecting a new end vertiport based on the provided routing matrix.
+        routing_matrix: dict keyed by destination vertiport id,
+                each value is a 2D list/array P where
+                P[i][j] = p_ij^(d), the probability of 
+                hopping to vertiport j when at i, heading to d.
+        '''
+        uav = self.uav_dict[uav_id]
+        #! NO more adding to vertiport.uav_id_list 
+        start_vertiport = uav.end_vertiport
+        while True:
+            end_vertiport = random.choice(self.airspace.vertiport_list)
+            if end_vertiport != start_vertiport:
+                break
+        uav.assign_start_end(start_vertiport, end_vertiport)
+        print(f'Reassigned new mission to UAV id: {uav.id_}')
+
+        return None    
+    
+    def reassign_new_mission_heuristic(self, uav_id: int, heuristic: str = "queue_free") -> None:
+        '''
+        Reassigns a new mission to a UAV by selecting a new end vertiport based on a heuristic.
+        heuristic: str, the heuristic to use for selecting the new end vertiport. 
+                    "queue_free": selects the vertiport with the shortest landing queue.
+        '''
+        uav = self.uav_dict[uav_id]
+        #! NO more adding to vertiport.uav_id_list 
+        start_vertiport = uav.end_vertiport
+        
+        # if heuristic == "queue_free":
+        end_vertiport = min(self.airspace.vertiport_list, key=lambda vp: len(vp.landing_queue))
+        while end_vertiport == start_vertiport:
+            end_vertiport = min(self.airspace.vertiport_list, key=lambda vp: len(vp.landing_queue))
+        
+        uav.assign_start_end(start_vertiport, end_vertiport)
+        print(f'Reassigned new mission to UAV id: {uav.id_} with heuristic: {heuristic}')
 
         return None
 
