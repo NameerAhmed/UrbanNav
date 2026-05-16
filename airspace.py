@@ -233,7 +233,7 @@ class Airspace:
             sample_space = self.location_utm_gdf['geometry'].iloc[0]
             for tag_value in self.location_tags.keys():
                 # sample_space_geoseries:GeoSeries = self.location_utm_gdf.iloc[0,0]
-                sample_space = shapely.difference(sample_space, self.location_utm_buffer[tag_value].union_all())
+                sample_space = shapely.difference(sample_space, self.location_utm_buffer[tag_value].unary_union)
                 
             sample_space_gdf = GeoSeries(sample_space)
         else: 
@@ -360,7 +360,7 @@ class Airspace:
         if self.airspace_restricted_area_tag_list:
             sample_space = self.location_utm_gdf['geometry'].iloc[0]
             for tag_value in self.location_tags.keys():
-                sample_space = shapely.difference(sample_space, self.location_utm_buffer[tag_value].union_all())
+                sample_space = shapely.difference(sample_space, self.location_utm_buffer[tag_value].unary_union)
             sample_space_gdf = GeoSeries(sample_space)
         else: 
             sample_space = self.location_utm_gdf
@@ -502,24 +502,24 @@ if __name__ == '__main__':
     print()
 
     print(airspace.location_utm_gdf.columns)
-    # airspace.set_vertiport(Vertiport(location=Point(60000,300000)))
-    # print(airspace.vertiport_list)
-    # print('calling get_vertiport_list(): ', airspace.get_vertiport_list())
+    airspace.set_vertiport(Vertiport(location=Point(60000,300000)))
+    print(airspace.vertiport_list)
+    print('calling get_vertiport_list(): ', airspace.get_vertiport_list())
 
-    # airspace.create_vertiport_at_location(location=(620000, 3340000))
-    # print('calling get_vertiport_list(): ', airspace.get_vertiport_list())
+    airspace.create_vertiport_at_location(location=(620000, 3340000))
+    print('calling get_vertiport_list(): ', airspace.get_vertiport_list())
     
-    # fig, ax = plt.subplots()
-    # airspace.location_utm_gdf.plot(ax=ax)
-    # ax.plot()
-    # plt.show()
+    fig, ax = plt.subplots()
+    airspace.location_utm_gdf.plot(ax=ax)
+    ax.plot()
+    plt.show()
     
     # airspace.make_regions_dict('commercial', 5)
     # print(airspace.regions_dict)
     # print(airspace.get_random_vertiport_from_region(4))
     # print('Vertiports in airspace: ', airspace.get_vertiport_list())
     print('airspace.location_utm_gdf.geometry.iloc[0]: \n')
-    print(airspace.location_utm_gdf.geometry.iloc[0].shape)
+    # print(airspace.location_utm_gdf.geometry.iloc[0].shape)
 
 
 
