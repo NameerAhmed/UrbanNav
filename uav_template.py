@@ -100,6 +100,15 @@ class UAV_template(ABC):
         self.roll_dot:float
         self.yaw_dot:float
         
+        # UAV State of Charge (SOC) attributes
+        self.BATTERY_CAPACITY:float = 100.0 # in percentage, constant
+        self.current_battery_level:float = 100.0 # in percentage
+        self.battery_consumption_rate:float = 0.1 # percentage per time step
+        self.battery_charge_rate:float = 0.1 # percentage per time step
+
+        # Destination-conditioned attributes
+        dest_class: int
+
 
 
         # UAV mission completion epsilon distance
@@ -148,6 +157,7 @@ class UAV_template(ABC):
         # VERTIPORT DATA
         self.start_vertiport: Vertiport = start
         self.end_vertiport: Vertiport = end
+        dest_class = self.end_vertiport
 
         self.mission_start_point:Point = self.start_vertiport.location
         self.mission_end_point:Point = self.end_vertiport.location
